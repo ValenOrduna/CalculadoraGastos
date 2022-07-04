@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Happy+Monkey&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Calculadora de Gastos - Iniciar Sesion</title>
+</head>
+<body>
+    <header class="container-fluid d-flex justify-content-center">
+        <div class="logo">
+            <img src="media/logo.gif" width="140px" alt="">
+        </div>
+    </header>
+
+    <main>
+        <form id="formulario" class="container">
+            <div class="inputs text-center">
+                <p>Tu nombre</p>
+                <input class="input" id="inputnombre" type="text" placeholder="Tu nombre">
+            </div>
+            <div class="inputs text-center">
+                <p>Tu apellido</p>
+                <input class="input" id="inputapellido" type="text" placeholder="Tu apellido">
+            </div>
+            <div class="inputs text-center">
+                <p>Tu edad</p>
+                <input class="input" id="inputedad" type="text" placeholder="Tu edad">
+            </div>
+            <div class="inputs text-center">
+                <p>Tu salario</p>
+                <input class="input" id="inputsalario" type="text" placeholder="Tu salario">
+            </div>
+            <div class="boton text-center">
+                <button id="comenzar">
+                    <span class="shadow"></span>
+                    <span class="edge"></span>
+                    <span class="front text"> Comenzar
+                    </span>
+                </button>
+            </div>
+        </form>
+    </main>
+    
+    <script src="main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
