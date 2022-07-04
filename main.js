@@ -234,9 +234,17 @@ function AgregarGastos(e){
     salario+=agregarsal;
     SumarGastos();
     MasGastos();
-    let borrar= document.querySelector('.divpadre');
-    borrar.remove();
-    EmpezarApp();
+    const cuadrado= document.createElement('div');
+    cuadrado.classList.add('cuadrado');
+    cuadrado.innerHTML=`<p class="textocuadrado">GASTO Y SALARIO AGREGADO!</p>`;
+    const borrar= document.querySelector('.divpadre');
+    document.body.appendChild(cuadrado);
+    borrar.style.filter='blur(2px)';
+    setTimeout(() => {
+        cuadrado.remove()
+        borrar.remove();
+        EmpezarApp();
+    }, 2000);
 }
 
 //Sumamos los gastos
