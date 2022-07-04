@@ -127,8 +127,9 @@ function Empezar(e){
             MostrarAlerta('Te has registrado exitosamente!!')
             setTimeout(() => {
                 formulario.remove();
+                EmpezarApp();
             }, 3000);
-            EmpezarApp();
+            
         } 
     }
     setTimeout(()=>{
