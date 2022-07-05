@@ -39,25 +39,24 @@ class Persona {
 
 let persona= new Persona(nombre,apellido);
 
-
 //Pedimos los Datos
 function PedirDatos(){
     document.addEventListener('DOMContentLoaded',IniciarApp)
     inputnom.onchange=()=>{
         nombre=inputnom.value;
-        ValidarDatos(nombre);
+        inputnom.style.background='white';
     }
     inputap.onchange=()=>{
         apellido=inputap.value;
-        ValidarDatos(apellido);
+        inputap.style.background='white';
     }
     inputedad.onchange=()=>{
         edad=inputedad.value;
-        ValidarDatos(edad);
+        inputedad.style.background='white';
     }
     inputsal.onchange=()=>{
         salario=inputsal.value;
-        ValidarDatos(salario);
+        inputsal.style.background='white';
     }
     Boton();
 }
@@ -67,51 +66,36 @@ function IniciarApp(){
     boton.disabled=false;
 }
 
-//Validamos los Datos Enviados
-function ValidarDatos(validar){
-    
-    switch(validar){
-        case nombre:
-            if(validar===""||validar===" "||Number(validar)){
-                inputnom.style.background='red';
-            }else {
-                inputnom.style.background='white'; 
-            }
-            break;
-        case apellido:
-            if(validar===""||validar===" "||Number(validar)){
-                inputap.style.background='red';
+//Funcion de Enviar Boton
+function Boton (){
+    formulario.addEventListener('submit',ControlarDatos);
+}
 
-            }else{
-                inputap.style.background='white';
-            } 
-            break;
-        case edad:
-            if(validar===""||validar===" "||isNaN(validar)||validar<=0){
-                inputedad.style.background='red';
-            }else{
-                inputedad.style.background='white';
-            } 
-            break;
-        case salario:
-            if(validar===""||validar===" "||isNaN(validar)||validar<=0){
-                inputsal.style.background='red';
-
-            }else{
-                inputsal.style.background='white';
-            } 
-            break;
+//Controlamos los datos obtenidos
+function ControlarDatos(e){
+    e.preventDefault();
+    if (inputnom.value.length<=3||Number(inputnom.value)){
+        inputnom.style.background='red';
+        PedirDatos();
+    }
+    if (inputap.value.length<=3||Number(inputap.value)){
+        inputap.style.background='red';
+        PedirDatos();
+    }
+    if (inputedad.value<=0||isNaN(inputedad.value)||inputedad.value===""){
+        inputedad.style.background='red';
+        PedirDatos();
+    }
+    if (inputsal.value<0||isNaN(inputsal.value)||inputsal.value===""){
+        inputsal.style.background='red';
+    }
+    if(inputnom.value.length>3&&inputap.value.length>3&&inputnom.value!=Number&&inputap.value!=Number&&inputedad.value>0&&inputedad!=isNaN&&inputedad!=""&&inputsal.value>=0&&inputsal!=isNaN&&inputsal!=""){
+        Empezar();
     }
 }
 
-//Funcion de Enviar Boton
-function Boton (){
-    formulario.addEventListener('submit',Empezar);
-}
-
 //Empezamos la aplicacion
-function Empezar(e){
-    e.preventDefault();
+function Empezar(){
     if(nombre!==''&&apellido!==''&&edad!==''&&salario!==''){
         let val;
         for (const persona of personas) {
