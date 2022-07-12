@@ -45,18 +45,22 @@ function PedirDatos(){
     inputnom.onchange=()=>{
         nombre=inputnom.value;
         inputnom.style.background='white';
+        inputnom.style.color='black';
     }
     inputap.onchange=()=>{
         apellido=inputap.value;
         inputap.style.background='white';
+        inputap.style.color='black';
     }
     inputedad.onchange=()=>{
         edad=inputedad.value;
         inputedad.style.background='white';
+        inputedad.style.color='black';
     }
     inputsal.onchange=()=>{
         salario=inputsal.value;
         inputsal.style.background='white';
+        inputsal.style.color='black';
     }
     Boton();
 }
@@ -74,22 +78,27 @@ function Boton (){
 //Controlamos los datos obtenidos
 function ControlarDatos(e){
     e.preventDefault();
-    if (inputnom.value.length<=3||Number(inputnom.value)){
-        inputnom.style.background='red';
+    if (inputnom.value.length<=2||Number(inputnom.value)){
+        inputnom.style.background='#ed1652';
+        inputnom.style.color='white';
         PedirDatos();
     }
-    if (inputap.value.length<=3||Number(inputap.value)){
-        inputap.style.background='red';
+    if (inputap.value.length<3||Number(inputap.value)){
+        inputap.style.background='#ed1652';
+        inputap.style.color='white';
         PedirDatos();
     }
     if (inputedad.value<=0||isNaN(inputedad.value)||inputedad.value===""){
-        inputedad.style.background='red';
+        inputedad.style.background='#ed1652';
+        inputedad.style.color='white';
         PedirDatos();
     }
     if (inputsal.value<0||isNaN(inputsal.value)||inputsal.value===""){
-        inputsal.style.background='red';
+        inputsal.style.background='#ed1652';
+        inputsal.style.color='white';
+        PedirDatos();
     }
-    if(inputnom.value.length>3&&inputap.value.length>3&&inputnom.value!=Number&&inputap.value!=Number&&inputedad.value>0&&inputedad!=isNaN&&inputedad!=""&&inputsal.value>=0&&inputsal!=isNaN&&inputsal!=""){
+    if(inputnom.value.length>=2&&inputap.value.length>=2&&inputnom.value!=Number&&inputap.value!=Number&&inputedad.value>0&&inputedad!=isNaN&&inputedad!=""&&inputsal.value>0&&inputsal!=isNaN&&inputsal!=""){
         Empezar();
     }
 }
