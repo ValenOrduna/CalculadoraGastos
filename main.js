@@ -3,6 +3,8 @@ let nombre;
 let apellido;
 let edad;
 let salario;
+let salarioinicial;
+let porcentaje=0;
 let personas=[
     {nombre:"Valentin",apellido:"Orduña"},
     {nombre:"Dario",apellido:"Orduña"},
@@ -23,6 +25,7 @@ let gastostotalesI=0;
 let gasto=0;
 let gastoin=0;
 let agregarsal=0;
+let salariosagregados=[];
 let diaE=0;
 let diaI=0;
 let m=0;
@@ -36,11 +39,14 @@ class Persona {
         this.salario=salario;
     }
 }
-
 let persona= new Persona(nombre,apellido);
-
+let picado=localStorage.getItem('persona');
 //Pedimos los Datos
 function PedirDatos(){
+    if(picado!=undefined){
+        formulario.remove();
+        EmpezarApp();
+    }
     document.addEventListener('DOMContentLoaded',IniciarApp)
     inputnom.onchange=()=>{
         nombre=inputnom.value;
@@ -58,10 +64,11 @@ function PedirDatos(){
         inputedad.style.color='black';
     }
     inputsal.onchange=()=>{
-        salario=inputsal.value;
+        salario=Number(inputsal.value);
+        salarioinicial=Number(inputsal.value);
         inputsal.style.background='white';
         inputsal.style.color='black';
-    }
+    } 
     Boton();
 }
 //Deshablitiamos Boton Comenzar
@@ -103,6 +110,8 @@ function ControlarDatos(e){
     }
 }
 
+
+
 //Empezamos la aplicacion
 function Empezar(){
     if(nombre!==''&&apellido!==''&&edad!==''&&salario!==''){
@@ -114,15 +123,19 @@ function Empezar(){
             }
         }
         if(val!=1){
-            const persona={nombre:nombre,apellido:apellido};
-            personas.push(persona);
             console.log(personas);
-            MostrarAlerta('Te has registrado exitosamente!!')
+            MostrarAlerta('Te has registrado exitosamente!!');
+            const persona={nombre:nombre,apellido:apellido,edad:edad,salario:salario,salarioinicial:salarioinicial};
+            localStorage.setItem('persona',JSON.stringify(persona));
+            const gastoss={gastostotales:gastostotales,gastostotalesE:gastostotalesE,gastostotalesI:gastostotalesI,diaE:diaE,diaI:diaI,m:m,n:n,porcentaje:porcentaje,dias:1};
+            localStorage.setItem('gastos',JSON.stringify(gastoss));
+            localStorage.setItem('arraygasto',JSON.stringify(gastos));
+            localStorage.setItem('arraygastoin',JSON.stringify(gastosinnecesarios));
+            localStorage.setItem('arraysalario',JSON.stringify(salariosagregados));
             setTimeout(() => {
                 formulario.remove();
                 EmpezarApp();
-            }, 3000);
-            
+            }, 3000); 
         } 
     }
     setTimeout(()=>{
@@ -147,8 +160,11 @@ function MostrarAlerta(mensaje,tipo){
     }, 3000);
 }
 
+
 //Empezamos aplicacion y creamos la estructura correspondiente
 function EmpezarApp(){
+    let valor2=JSON.parse(localStorage.getItem('gastos'));
+    let valor=JSON.parse(localStorage.getItem('persona'));
     gasto=0;
     gastoin=0;
     agregarsal=0;
@@ -158,7 +174,7 @@ function EmpezarApp(){
     divdatos.classList.add('divgastos');
     let divestadisticas= document.createElement('div');
     divestadisticas.classList.add('divestadisticas');
-    divdatos.innerHTML=`<p class="titulo"> Agregar Gastos o Salario del DIA: ${gastos.length}</p>
+    divdatos.innerHTML=`<p class="titulo"> Agregar Gastos o Salario del DIA: ${valor2.dias}</p>
                         <form id="AgregarDatos">
                             <h3 class="tituloagregar">AGREGAR GASTO</h3>
                             <input id="inputgasto"class="input" type="text" placeholder="Agregar Gasto">
@@ -173,13 +189,14 @@ function EmpezarApp(){
                                 </span>
                             </button> 
                         </form>`;
-    divestadisticas.innerHTML=`<p class="estadistica">Gastos Totales = $${gastostotales}</p>
-                            <p class="estadistica">Gastos Totales Esenciales = $${gastostotalesE}</p>
-                            <p class="estadistica">Gastos Totales Innecesarios = $${gastostotalesI}</p>
-                            <p class="estadistica">Dia con mas Gasto Ensencial = DIA: ${diaE} $${m}</p>
-                            <p class="estadistica" id="est1">Dia con mas Gasto Innecesario = DIA: ${diaI} $${n} </p>
+    divestadisticas.innerHTML=`<div class="divbotonestadisticas"><button id="esa" class="botonestadiscticas">Ver estadísticas</button></div>
+                            <p class="estadistica">Gastos Totales = $${valor2.gastostotales}</p>
+                            <p class="estadistica">Gastos Totales Esenciales = $${valor2.gastostotalesE}</p>
+                            <p class="estadistica">Gastos Totales Innecesarios = $${valor2.gastostotalesI}</p>
+                            <p class="estadistica">Día con más Gastos Esenciales = DIA: ${valor2.diaE} $${valor2.m}</p>
+                            <p class="estadistica" id="est1">Día con más Gastos Innecesarios = DIA: ${valor2.diaI} $${valor2.n} </p>
                             <div class="contenedorsalario">
-                                <p class="estadistica">Salario Actual = $${salario}</p>
+                                <p class="estadistica">Salario Actual = $${valor.salario}</p>
                             </div>`;
     document.body.appendChild(divpadre);
     divpadre.appendChild(divdatos);
@@ -196,15 +213,53 @@ function EmpezarApp(){
     inputagregarsal.onchange=()=>{
         agregarsal=Number(inputagregarsal.value);
     }
+    const divv=document.querySelector('#esa');
+    divv.addEventListener('click',VerEstadisticas);
+    porcentaje=gastostotalesI;
     gastostotalesE=0;
     gastostotalesI=0;
-    ComprobarSalario();
+    ComprobarSalario(valor);
     Agregar();
 }
 
+//Funcion de Ver Estadisticas
+function VerEstadisticas(){
+    let arraysalario=JSON.parse(localStorage.getItem('arraysalario'));
+    let valor2=JSON.parse(localStorage.getItem('gastos'));
+    let valor=JSON.parse(localStorage.getItem('persona'));
+    const divdatos= document.querySelector('.divgastos');
+    divdatos.innerHTML=`<img id="volver" src="/media/flecha.png" width="40px">
+                        <p class="estadistica">Tu Nombre: <span class="dato">${valor.nombre}</span></p>
+                        <p class="estadistica">Tu Apellido: <span class="dato">${valor.apellido}</span></p>
+                        <p class="estadistica">Tu Edad: <span class="dato">${valor.edad}</span> Años</p>
+                        <p class="estadistica">Tu Salario Inicial: <span class="dato">$${valor.salarioinicial}</span></p>
+                        <p class="estadistica">Tus Salarios Agregados: <Veces class="dato">${arraysalario.length} Veces</p>`;
+    const divestadisticas= document.querySelector('.divestadisticas');
+    let total=0,mensaje;
+    arraysalario.forEach(function(a){total += a;});
+    let totalsalario=valor.salarioinicial+total;
+    valor2.porcentaje=valor2.gastostotalesI/totalsalario*100;
+    if(valor2.porcentaje>=30){
+        mensaje="Por lo tanto te recomendamos no seguir Gastando Innecesariamente";
+    }else{
+        mensaje="Por lo tanto todavia puedes seguir realizando Gastos Innecesarios";
+    }
+    divestadisticas.innerHTML=`<p class="estadistica">Salario Total Agregado: <span class="dato">$${totalsalario}</span></p>
+                        <p class="estadistica">Porcentaje de Gastos Innecesario en relacion a tu Total Agregado es de <span class="dato">${parseInt(valor2.porcentaje)}%</span>. ${mensaje}</p>`;
+    const volver=document.querySelector('#volver');
+    volver.addEventListener('click',Volver);
+}
+
+//Funcion Volver
+function Volver(){
+    const borrar= document.querySelector('.divpadre');
+    borrar.remove();
+    EmpezarApp();
+}
+
 //Comprobamos salario
-function ComprobarSalario(){
-    if(salario<=0){
+function ComprobarSalario(valor){
+    if(valor.salario<=0){
         inputgasto.disabled=true;
         inputgastoin.disabled=true;
         inputgasto.setAttribute('placeholder','Debes agregar salario');
@@ -221,18 +276,32 @@ function Agregar(){
 //Agregamos los gastos a los Arrays
 function AgregarGastos(e){
     e.preventDefault();
-    gastos.push(gasto);
-    gastosinnecesarios.push(gastoin);
-    salario=salario-gasto-gastoin;
-    salario+=agregarsal;
-    SumarGastos();
-    MasGastos();
+    let valor=JSON.parse(localStorage.getItem('persona'));
+    let valor2=JSON.parse(localStorage.getItem('gastos'));
+    const arraygasto=JSON.parse(localStorage.getItem('arraygasto'));
+    const arraygastoin=JSON.parse(localStorage.getItem('arraygastoin'));
+    let arraysalario=JSON.parse(localStorage.getItem('arraysalario'));
+    arraygasto.push(gasto);
+    arraygastoin.push(gastoin);
+    localStorage.setItem('arraygasto',arraygasto);
+    localStorage.setItem('arraygastoin',arraygastoin);
+    valor.salario=valor.salario-gasto-gastoin;
+    valor.salario+=agregarsal;
+    VerificarSaldoAgregado(arraysalario);
+    SumarGastos(valor2,arraygasto,arraygastoin);
+    MasGastos(valor2,arraygasto,arraygastoin);
     const cuadrado= document.createElement('div');
     cuadrado.classList.add('cuadrado');
     cuadrado.innerHTML=`<p class="textocuadrado">GASTO Y SALARIO AGREGADO!</p>`;
     const borrar= document.querySelector('.divpadre');
     document.body.appendChild(cuadrado);
     borrar.style.filter='blur(2px)';
+    valor2.dias++;
+    localStorage.setItem('persona',JSON.stringify(valor));
+    localStorage.setItem('gastos',JSON.stringify(valor2));
+    localStorage.setItem('arraygasto',JSON.stringify(arraygasto));
+    localStorage.setItem('arraygastoin',JSON.stringify(arraygastoin));
+    localStorage.setItem('arraysalario',JSON.stringify(arraysalario));
     setTimeout(() => {
         cuadrado.remove()
         borrar.remove();
@@ -241,26 +310,32 @@ function AgregarGastos(e){
 }
 
 //Sumamos los gastos
-function SumarGastos(){
-    let unirarray=gastos.concat(gastosinnecesarios);
-    gastostotales=0;
+function SumarGastos(valor2,arraygasto,arraygastoin){
+    let unirarray=arraygasto.concat(arraygastoin);
     for (let index = 0; index < unirarray.length; index++) {
-        gastostotales+=unirarray[index];
+        valor2.gastostotales+=unirarray[index];
     }
-    for (let i = 0; i < gastos.length; i++) {
-        gastostotalesE+=gastos[i];
+    for (let i = 0; i < arraygasto.length; i++) {
+        valor2.gastostotalesE+=arraygasto[i];
     }
-    for (let e = 0; e < gastos.length; e++) {
-        gastostotalesI+=gastosinnecesarios[e];
+    for (let e = 0; e < arraygastoin.length; e++) {
+        valor2.gastostotalesI+=arraygastoin[e];
     }
 }
 
 //Detectamos dias con mas gastos
-function MasGastos(){
-    m=Math.max(...gastos);
-    n=Math.max(...gastosinnecesarios);
-    diaE= gastos.indexOf(m);
-    diaI= gastosinnecesarios.indexOf(n);
+function MasGastos(valor2,arraygasto,arraygastoin){
+    valor2.m=Math.max(...arraygasto);
+    valor2.n=Math.max(...arraygastoin);
+    valor2.diaE= arraygasto.indexOf(valor2.m);
+    valor2.diaI= arraygastoin.indexOf(valor2.n);
+}
+
+//Verficamos Saldo para agregarlo al Array de Saldos Agregados
+function VerificarSaldoAgregado (arraysalario){
+    if(agregarsal>=1){
+        arraysalario.push(agregarsal);
+    }
 }
 
 //Comenzamos la app
