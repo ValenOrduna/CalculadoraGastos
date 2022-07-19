@@ -267,3 +267,14 @@ button:focus:not(:focus-visible) {
     background: #ed1652;
     color: white;
 }
+.cerrarsesion{
+    width: 90%;
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+}
+.botoncerrarsesion{
+    padding: 6px;
+    background: #f00d3b;
+    border-radius: 5px;
+}

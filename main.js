@@ -77,8 +77,6 @@ function ControlarDatos(e){
     inputnom.value.length>=2&&inputap.value.length>=2&&inputnom.value!=Number&&inputap.value!=Number&&inputedad.value>0&&inputedad!=isNaN&&inputedad!=""&&inputsal.value>0&&inputsal!=isNaN&&inputsal!=""&&Empezar();
 }
 
-
-
 //Empezamos la aplicacion
 function Empezar(){
     if(nombre!==''&&apellido!==''&&edad!==''&&salario!==''){
@@ -146,7 +144,7 @@ function EmpezarApp(){
                                 </span>
                             </button> 
                         </form>`;
-    divestadisticas.innerHTML=`<div class="divbotonestadisticas"><button id="esa" class="botonestadiscticas">Ver estadísticas</button></div>
+    divestadisticas.innerHTML=`<div class="divbotonestadisticas"><button id="btnestadisctica" class="botonestadiscticas">Ver estadísticas</button></div>
                             <p class="estadistica">Gastos Totales = $${valor2.gastostotales}</p>
                             <p class="estadistica">Gastos Totales Esenciales = $${valor2.gastostotalesE}</p>
                             <p class="estadistica">Gastos Totales Innecesarios = $${valor2.gastostotalesI}</p>
@@ -155,9 +153,13 @@ function EmpezarApp(){
                             <div class="contenedorsalario">
                                 <p class="estadistica">Salario Actual = $${valor.salario}</p>
                             </div>`;
+    const cerrarsesion=document.createElement('div');
+    cerrarsesion.classList.add('cerrarsesion');
+    cerrarsesion.innerHTML=`<button id="cerrarsesion" class="botoncerrarsesion">Cerrar Sesion</button>`;
     document.body.appendChild(divpadre);
     divpadre.appendChild(divdatos);
     divpadre.appendChild(divestadisticas);
+    document.body.appendChild(cerrarsesion);
     const inputgasto= document.querySelector('#inputgasto');
     inputgasto.onchange=()=>{
         gasto=Number(inputgasto.value); 
@@ -170,8 +172,10 @@ function EmpezarApp(){
     inputagregarsal.onchange=()=>{
         agregarsal=Number(inputagregarsal.value);
     }
-    const divv=document.querySelector('#esa');
+    const divv=document.querySelector('#btnestadisctica');
     divv.addEventListener('click',VerEstadisticas);
+    const finalizarsesion=document.querySelector('#cerrarsesion');
+    finalizarsesion.addEventListener('click',CerrarSesion);
     porcentaje=gastostotalesI;
     gastostotalesE=0,gastostotalesI=0;
     ComprobarSalario(valor);
@@ -206,7 +210,15 @@ function VerEstadisticas(){
 function Volver(){
     const borrar= document.querySelector('.divpadre');
     borrar.remove();
-    EmpezarApp();
+}
+
+function CerrarSesion(){
+    const borrar= document.querySelector('.divpadre');
+    borrar.remove();
+    const borrar2= document.querySelector('.cerrarsesion');
+    borrar2.remove();
+    localStorage.removeItem('persona');
+    window.location.reload();
 }
 
 //Comprobamos salario
