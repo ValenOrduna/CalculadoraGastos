@@ -257,3 +257,13 @@ button:focus:not(:focus-visible) {
 .dato{
     color: brown;
 }
+
+.inputvalido{
+    background: white;
+    color: black;
+}
+
+.inputinvalido{
+    background: #ed1652;
+    color: white;
+}
