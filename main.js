@@ -254,6 +254,7 @@ function AgregarGastos(e){
     cuadrado.classList.add('cuadrado');
     cuadrado.innerHTML=`<p class="textocuadrado">GASTO Y SALARIO AGREGADO!</p>`;
     const borrar= document.querySelector('.divpadre');
+    const cerrarsesion= document.querySelector('.cerrarsesion');
     document.body.appendChild(cuadrado);
     borrar.style.filter='blur(2px)';
     valor2.dias++;
@@ -265,6 +266,7 @@ function AgregarGastos(e){
     setTimeout(() => {
         cuadrado.remove()
         borrar.remove();
+        cerrarsesion.remove();
         EmpezarApp();
     }, 2000);
 }
