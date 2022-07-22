@@ -1,10 +1,12 @@
+
 //Inicializamos Variables, Arrays ,Clases y Objetos
 let nombre,apellido,edad,salario,salarioinicial,porcentaje=0;
 let personas=[{nombre:"Valentin",apellido:"Orduña"},{nombre:"Dario",apellido:"Orduña"},{nombre:"Agustin",apellido:"Orduña"},{nombre:"Magali",apellido:"Zibana"}];
 let inputnom= document.querySelector('#inputnombre'),inputap= document.querySelector('#inputapellido'),inputedad= document.querySelector('#inputedad'),inputsal= document.querySelector('#inputsalario'),boton= document.querySelector('#comenzar');
 const formulario= document.querySelector('#formulario');
 let gastos=[0],gastosinnecesarios=[0],gastostotales=0,gastostotalesE=0,gastostotalesI=0,gasto=0,gastoin=0,agregarsal=0,salariosagregados=[],diaE=0,diaI=0,m=0,n=0;
-
+const DateTime = luxon.DateTime;
+const fecha= DateTime.now();
 class Persona {
     constructor(nombre,apellido,edad,salario){this.nombre=nombre,this.apellido=apellido,this.edad=edad,this.salario=salario;}
 }
@@ -83,16 +85,15 @@ function Empezar(){
         let val;
         for (const persona of personas) {
             if(nombre===persona.nombre && apellido===persona.apellido){
-                MostrarAlerta('El usuario ya esta registrado','error');
+                MostrarAlerta("El usuario ya esta creado.","El usuario ingresado ya esta creado, ingrese uno nuevamente.","warning","Intentar")
                 val=1;
             }
         }
         if(val!=1){
-            console.log(personas);
-            MostrarAlerta('Te has registrado exitosamente!!');
+            MostrarAlerta("Te has registrado exitosamente","Excelente,te has registado exitosamente. ¡Es hora de comenzar!","success","Comenzar");
             const persona={nombre:nombre,apellido:apellido,edad:edad,salario:salario,salarioinicial:salarioinicial};
             localStorage.setItem('persona',JSON.stringify(persona));
-            const gastoss={gastostotales:gastostotales,gastostotalesE:gastostotalesE,gastostotalesI:gastostotalesI,diaE:diaE,diaI:diaI,m:m,n:n,porcentaje:porcentaje,dias:1};
+            const gastoss={gastostotales:gastostotales,gastostotalesE:gastostotalesE,gastostotalesI:gastostotalesI,diaE:diaE,diaI:diaI,m:m,n:n,porcentaje:porcentaje};
             localStorage.setItem('gastos',JSON.stringify(gastoss));
             localStorage.setItem('arraygasto',JSON.stringify(gastos));
             localStorage.setItem('arraygastoin',JSON.stringify(gastosinnecesarios));
@@ -109,19 +110,16 @@ function Empezar(){
     },3000)  
 }
 
-//Mostramos Alerta en caso de ingresar usuario creado o usuario registrado
-function MostrarAlerta(mensaje,tipo){
-    const error= document.createElement('p');
-    error.textContent=mensaje;
-    tipo=='error'?error.classList.add('error'):error.classList.add('ok');
-    formulario.appendChild(error);
-    
-    setTimeout(() => {
-        error.remove();
-    }, 3000);
+//Mostramos Alerta
+function MostrarAlerta(title,text,icon,button){
+    swal({
+        title: title,
+        text: text,
+        icon: icon,
+        button: button,
+        duration:3000,
+    });
 }
-
-
 //Empezamos aplicacion y creamos la estructura correspondiente
 function EmpezarApp(){
     let valor2=JSON.parse(localStorage.getItem('gastos')),valor=JSON.parse(localStorage.getItem('persona')),divpadre= document.createElement('div');
@@ -129,7 +127,7 @@ function EmpezarApp(){
     divpadre.classList.add('divpadre');
     let divdatos= document.createElement('div'),divestadisticas= document.createElement('div');
     divdatos.classList.add('divgastos'),divestadisticas.classList.add('divestadisticas');
-    divdatos.innerHTML=`<p class="titulo"> Agregar Gastos o Salario del DIA: ${valor2.dias}</p>
+    divdatos.innerHTML=`<p class="titulo"> Agregar Gastos o Salario del DIA: <span class="dato">${fecha.toLocaleString()}</span></p>
                         <form id="AgregarDatos">
                             <h3 class="tituloagregar">AGREGAR GASTO</h3>
                             <input id="inputgasto"class="input" type="text" placeholder="Agregar Gasto">
@@ -148,14 +146,14 @@ function EmpezarApp(){
                             <p class="estadistica">Gastos Totales = $${valor2.gastostotales}</p>
                             <p class="estadistica">Gastos Totales Esenciales = $${valor2.gastostotalesE}</p>
                             <p class="estadistica">Gastos Totales Innecesarios = $${valor2.gastostotalesI}</p>
-                            <p class="estadistica">Día con más Gastos Esenciales = DIA: ${valor2.diaE} $${valor2.m}</p>
-                            <p class="estadistica" id="est1">Día con más Gastos Innecesarios = DIA: ${valor2.diaI} $${valor2.n} </p>
+                            <p class="estadistica">Día con más Gastos Esenciales = DIA: <span class="dato">${valor2.diaE}</span> $${valor2.m}</p>
+                            <p class="estadistica" id="est1">Día con más Gastos Innecesarios = DIA: <span class="dato">${valor2.diaI}</span> $${valor2.n} </p>
                             <div class="contenedorsalario">
                                 <p class="estadistica">Salario Actual = $${valor.salario}</p>
                             </div>`;
     const cerrarsesion=document.createElement('div');
     cerrarsesion.classList.add('cerrarsesion');
-    cerrarsesion.innerHTML=`<button id="cerrarsesion" class="botoncerrarsesion">Cerrar Sesion</button>`;
+    cerrarsesion.innerHTML=`<button id="cerrarsesion" class="botoncerrarsesion">Cerrar Sesión</button>`;
     document.body.appendChild(divpadre);
     divpadre.appendChild(divdatos);
     divpadre.appendChild(divestadisticas);
@@ -188,10 +186,10 @@ function VerEstadisticas(){
     let valor2=JSON.parse(localStorage.getItem('gastos'));
     let valor=JSON.parse(localStorage.getItem('persona'));
     const divdatos= document.querySelector('.divgastos');
-    divdatos.innerHTML=`<img id="volver" src="/media/flecha.png" width="40px">
-                        <p class="estadistica">Tu Nombre: <span class="dato">${valor.nombre}</span></p>
-                        <p class="estadistica">Tu Apellido: <span class="dato">${valor.apellido}</span></p>
-                        <p class="estadistica">Tu Edad: <span class="dato">${valor.edad}</span> Años</p>
+    divdatos.innerHTML=`<img id="volver" src="/media/flecha.svg" width="40px">
+                        <p class="estadistica">Tu Nombre: <span class="dato">${valor.nombre}</span><img id="edit1" class="editar" src="/media/editar.svg" width="20px"</p>
+                        <p class="estadistica">Tu Apellido: <span class="dato">${valor.apellido}</span><img id="edit2" class="editar" src="/media/editar.svg" width="20px"</p>
+                        <p class="estadistica">Tu Edad: <span class="dato">${valor.edad}</span> Años<img id="edit3" class="editar" src="/media/editar.svg" width="20px"</p>
                         <p class="estadistica">Tu Salario Inicial: <span class="dato">$${valor.salarioinicial}</span></p>
                         <p class="estadistica">Tus Salarios Agregados: <Veces class="dato">${arraysalario.length} Veces</p>`;
     const divestadisticas= document.querySelector('.divestadisticas');
@@ -204,21 +202,71 @@ function VerEstadisticas(){
                         <p class="estadistica">Porcentaje de Gastos Innecesario en relacion a tu Total Agregado es de <span class="dato">${parseInt(valor2.porcentaje)}%</span>. ${mensaje}</p>`;
     const volver=document.querySelector('#volver');
     volver.addEventListener('click',Volver);
+    const edit1= document.querySelector('#edit1'),edit2= document.querySelector('#edit2'),edit3= document.querySelector('#edit3');
+    edit1.addEventListener('click',()=>{
+        swal("Ingresa tu nombre aquí:", {
+            content: "input",
+        })
+        .then((value) => {
+            value.length<=2||Number(value) ? swal('El nombre ingresado no es correcto,vuelve a intentarlo nuevamente.') : swal(`Perfecto, ahora tu Nombre es ${value}`);
+            valor.nombre=value;
+            localStorage.setItem('persona',JSON.stringify(valor));
+        });
+    });
+    edit2.addEventListener('click',()=>{
+        swal("Ingresa tu apellido aquí:", {
+            content: "input",
+        })
+        .then((value) => {
+            value.length<3||Number(value) ? swal('El apellido ingresado no es correcto,vuelve a intentarlo nuevamente.') : swal(`Perfecto, ahora tu Apellido es ${value}`);
+            valor.apellido=value;
+            localStorage.setItem('persona',JSON.stringify(valor));
+        });
+    });
+    edit3.addEventListener('click',()=>{
+        swal("Ingresa tu edad aquí:", {
+            content: "input",
+        })
+        .then((value) => {
+            value<=0||isNaN(value)||value==="" ? swal('La edad ingresada no es correcta,vuelve a intentarlo nuevamente.') : swal(`Perfecto, ahora tu Edad es ${value}`);
+            valor.edad=value;
+            localStorage.setItem('persona',JSON.stringify(valor));
+        });
+    });
 }
 
 //Funcion Volver
 function Volver(){
     const borrar= document.querySelector('.divpadre');
+    const borrar2= document.querySelector('.cerrarsesion');
     borrar.remove();
+    borrar2.remove();
+    EmpezarApp();
 }
 
 function CerrarSesion(){
-    const borrar= document.querySelector('.divpadre');
-    borrar.remove();
-    const borrar2= document.querySelector('.cerrarsesion');
-    borrar2.remove();
-    localStorage.removeItem('persona');
-    window.location.reload();
+    swal({
+        title: "¿Estás seguro?",
+        text: "Los datos ingresados no se guardaran si cierras sesión.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willDelete) => {
+        if (willDelete) {
+            swal("¡Has cerrado sesión exitosamente!", {
+            icon: "success",
+        })
+        setTimeout(() => {
+            const borrar= document.querySelector('.divpadre');
+            borrar.remove();
+            const borrar2= document.querySelector('.cerrarsesion');
+            borrar2.remove();
+            localStorage.removeItem('persona');
+            window.location.reload();
+        }, 2500);
+        }
+    });
 }
 
 //Comprobamos salario
@@ -250,25 +298,30 @@ function AgregarGastos(e){
     VerificarSaldoAgregado(arraysalario);
     SumarGastos(valor2,arraygasto,arraygastoin);
     MasGastos(valor2,arraygasto,arraygastoin);
-    const cuadrado= document.createElement('div');
-    cuadrado.classList.add('cuadrado');
-    cuadrado.innerHTML=`<p class="textocuadrado">GASTO Y SALARIO AGREGADO!</p>`;
     const borrar= document.querySelector('.divpadre');
     const cerrarsesion= document.querySelector('.cerrarsesion');
-    document.body.appendChild(cuadrado);
-    borrar.style.filter='blur(2px)';
-    valor2.dias++;
     localStorage.setItem('persona',JSON.stringify(valor));
     localStorage.setItem('gastos',JSON.stringify(valor2));
     localStorage.setItem('arraysalario',JSON.stringify(arraysalario));
     localStorage.setItem('arraygasto',JSON.stringify(arraygasto));
     localStorage.setItem('arraygastoin',JSON.stringify(arraygastoin));
+    Toastify({
+        text: "¡Gasto y Salario agregado!",
+        duration: 4000,
+        position: 'left',
+        gravity:'bottom',
+        style: {
+            background: '#B2EDEF',
+            color:'black',
+            border:'2px solid black'
+        }
+        
+    }).showToast();
     setTimeout(() => {
-        cuadrado.remove()
         borrar.remove();
         cerrarsesion.remove();
         EmpezarApp();
-    }, 2000);
+    }, 300);
 }
 
 //Sumamos los gastos
@@ -289,10 +342,18 @@ function SumarGastos(valor2,arraygasto,arraygastoin){
 
 //Detectamos dias con mas gastos
 function MasGastos(valor2,arraygasto,arraygastoin){
-    valor2.m=Math.max(...arraygasto);
-    valor2.n=Math.max(...arraygastoin);
-    valor2.diaE= arraygasto.indexOf(valor2.m);
-    valor2.diaI= arraygastoin.indexOf(valor2.n);
+    m=Math.max(...arraygasto);
+    n=Math.max(...arraygastoin);
+    valor2.diaE===fecha.toLocaleString() && (valor2.m+=gasto);
+    valor2.diaI===fecha.toLocaleString() && (valor2.n+=gastoin);
+    if(m>valor2.m){
+        valor2.m=m;
+        valor2.diaE= fecha.toLocaleString();
+    }
+    if(m>valor2.n){
+        valor2.n=n;
+        valor2.diaI= fecha.toLocaleString();
+    }
 }
 
 //Verficamos Saldo para agregarlo al Array de Saldos Agregados

@@ -126,37 +126,9 @@ button:focus:not(:focus-visible) {
     background: red;
 }
 
-.error {
-    display: flex;
-    justify-content: center;
-    background-color: red;
-    opacity: 0.85;
-    padding: 20px;
-    color: black;
-    font-size: 16px;
-    margin-top: 10px;
-    border-radius: 4px ;
-    border: 2px solid black;
-    transition: all 2000ms ease-in-out;
-}
-
-.ok {
-    display: flex;
-    justify-content: center;
-    background-color: #28b62c;
-    opacity: 0.85;
-    padding: 20px;
-    color: black;
-    font-size: 16px;
-    margin-top: 10px;
-    border-radius: 4px ;
-    border: 2px solid black;
-    transition: all 2000ms ease-in-out;
-}
-
 .divgastos{
     width: 500px;
-    height: 450px;
+    height: 480px;
     background: #B2EDEF;
     padding: 20px;
     border-radius: 4px;
@@ -167,7 +139,7 @@ button:focus:not(:focus-visible) {
 
 .divestadisticas{
     width: 500px;
-    height: 450px;
+    height: 480px;
     background: beige ;
     padding: 20px;
     border-radius: 4px;
@@ -181,7 +153,7 @@ button:focus:not(:focus-visible) {
 }
 
 .divpadre{
-    width: 100%;
+    width: 100vw;
     display: flex;
     justify-content: center;
     margin-top: 20px;
@@ -247,6 +219,7 @@ button:focus:not(:focus-visible) {
     border-radius: 5px;
     color: black;
     font-size: 16px;
+    border: 2px solid black;
 }
 
 #volver{
@@ -268,13 +241,43 @@ button:focus:not(:focus-visible) {
     color: white;
 }
 .cerrarsesion{
-    width: 90%;
-    margin-top: 30px;
+    width: 89%;
+    margin-top: 20px;
     display: flex;
     justify-content: flex-end;
 }
 .botoncerrarsesion{
     padding: 6px;
-    background: #f00d3b;
+    background: #fa8000;
     border-radius: 5px;
+    border: 2px solid black;
 }
+.editar{
+    margin-left: 10px;
+    cursor: pointer;
+}
+@media screen and (max-width: 1200px) {
+    .divgastos,.divestadisticas{
+        width: 400px;
+    }
+    .contenedorsalario{
+        width: 280px;
+    }
+    .contenedorsalario p{
+        font-size: 20px;
+    }
+    .cerrarsesion{
+        width: 95vw;
+        margin-top: 30px;
+    }
+    .estadistica,#est1{
+        font-size: 21px;
+    }
+    .divbotonestadisticas{
+        margin-bottom: 10px;
+    }
+    .input{
+        width: 350px;
+    }
+}
+
