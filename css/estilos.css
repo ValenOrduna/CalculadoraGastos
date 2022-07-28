@@ -132,9 +132,9 @@ button:focus:not(:focus-visible) {
     background: #B2EDEF;
     padding: 20px;
     border-radius: 4px;
-    border-top: 2px solid black;
-    border-left: 2px solid black;
-    border-bottom: 2px solid black;
+    border-top: 3px solid black;
+    border-left: 3px solid black;
+    border-bottom: 3px solid black;
 }
 
 .divestadisticas{
@@ -143,9 +143,9 @@ button:focus:not(:focus-visible) {
     background: beige ;
     padding: 20px;
     border-radius: 4px;
-    border-top: 2px solid black;
-    border-right: 2px solid black;
-    border-bottom: 2px solid black;
+    border-top: 3px solid black;
+    border-right: 3px solid black;
+    border-bottom: 3px solid black;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     -ms-border-radius: 4px;
@@ -248,13 +248,24 @@ button:focus:not(:focus-visible) {
 }
 .botoncerrarsesion{
     padding: 6px;
-    background: #fa8000;
+    background: #f00d3b;
     border-radius: 5px;
     border: 2px solid black;
+    color: white;
 }
 .editar{
     margin-left: 10px;
     cursor: pointer;
+}
+@media screen and (max-width:2560px){
+    .cerrarsesion{
+        width: 70%;
+    }
+}
+@media screen and (max-width:1440px){
+    .cerrarsesion{
+        width: 85%;
+    }
 }
 @media screen and (max-width: 1200px) {
     .divgastos,.divestadisticas{
@@ -280,4 +291,105 @@ button:focus:not(:focus-visible) {
         width: 350px;
     }
 }
+@media screen and (max-width: 1200px) {
+    .cerrarsesion{
+        width: 89%;
+    }
+}
+@media screen and (max-width: 768px) {
+    .cerrarsesion{
+        width: 100%;
+        margin-top: 40px;
+    }
+    .botoncerrarsesion{
+        padding: 4px;
+    }
+}
 
+@media screen and (max-width: 425px) {
+    .divgastos,.divestadisticas{
+        width: 200px;
+    }
+    .contenedorsalario{
+        width: 165px;
+    }
+    .contenedorsalario p{
+        font-size: 12px;
+    }
+    .cerrarsesion{
+        width: 95vw;
+        margin-top: 10px;
+    }
+    .botoncerrarsesion{
+        padding: 2px;
+        font-size: 14px;
+    }
+    .estadistica,#est1{
+        font-size: 14px;
+    }
+    .divbotonestadisticas{
+        margin-bottom: 10px;
+    }
+    .input{
+        width: 160px;
+    }
+    #input1,#input2,#input3,#input4{
+        width: 300px;
+    }
+    .titulo,.tituloagregar{
+        font-size: 16px;
+    }
+    .botonestadiscticas{
+        padding: 2px;
+        font-size: 12px;
+    }
+}
+@media screen and (max-width: 425px) {
+    .divgastos,.divestadisticas{
+        width: 180px;
+    }
+    .contenedorsalario{
+        width: 160px;
+        height: 40px;
+    }
+    .contenedorsalario p{
+        font-size: 12px;
+    }
+    .cerrarsesion{
+        margin-top: 20px;
+    }
+    .input{
+        width: 150px;
+        font-size: 10px;
+    }
+    .titulo,.tituloagregar{
+        font-size: 14px;
+    }
+    .front{
+        padding: 10px;
+    }
+}
+
+@media screen and (max-width: 325px) {
+    .divgastos,.divestadisticas{
+        width: 160px;
+    }
+    .estadistica,#est1{
+        font-size: 12px;
+    }
+    .input{
+        width: 130px;
+        font-size: 9px;
+    }
+    .contenedorsalario{
+        width: 135px;
+        height: 40px;
+    }
+    .contenedorsalario p{
+        font-size: 10px;
+    }
+}
+
+.red{
+    background: red;
+}

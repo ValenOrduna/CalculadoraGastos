@@ -1,14 +1,15 @@
-
 //Inicializamos Variables, Arrays ,Clases y Objetos
 let nombre,apellido,edad,salario,salarioinicial,porcentaje=0;
-let personas=[{nombre:"Valentin",apellido:"Orduña"},{nombre:"Dario",apellido:"Orduña"},{nombre:"Agustin",apellido:"Orduña"},{nombre:"Magali",apellido:"Zibana"}];
-let inputnom= document.querySelector('#inputnombre'),inputap= document.querySelector('#inputapellido'),inputedad= document.querySelector('#inputedad'),inputsal= document.querySelector('#inputsalario'),boton= document.querySelector('#comenzar');
 const formulario= document.querySelector('#formulario');
 let gastos=[0],gastosinnecesarios=[0],gastostotales=0,gastostotalesE=0,gastostotalesI=0,gasto=0,gastoin=0,agregarsal=0,salariosagregados=[],diaE=0,diaI=0,m=0,n=0;
 const DateTime = luxon.DateTime;
 const fecha= DateTime.now();
 class Persona {
     constructor(nombre,apellido,edad,salario){this.nombre=nombre,this.apellido=apellido,this.edad=edad,this.salario=salario;}
+}
+
+const setLocal=(nombre,valor)=>{
+    localStorage.setItem(nombre,JSON.stringify(valor));
 }
 let persona= new Persona(nombre,apellido);
 let compinicio=localStorage.getItem('persona');
@@ -18,110 +19,100 @@ function PedirDatos(){
         formulario.remove();
         EmpezarApp();
     }
-    document.addEventListener('DOMContentLoaded',IniciarApp)
-    inputnom.onchange=()=>{
-        nombre=inputnom.value;
-        inputnom.style.background='white';
-        inputnom.style.color='black';
-    }
-    inputap.onchange=()=>{
-        apellido=inputap.value;
-        inputap.style.background='white';
-        inputap.style.color='black';
-    }
-    inputedad.onchange=()=>{
-        edad=inputedad.value;
-        inputedad.style.background='white';
-        inputedad.style.color='black';
-    }
-    inputsal.onchange=()=>{
-        salario=Number(inputsal.value);
-        salarioinicial=Number(inputsal.value);
-        inputsal.style.background='white';
-        inputsal.style.color='black';
-    } 
-    Boton();
-}
-//Deshablitiamos Boton Comenzar
-function IniciarApp(){
-    boton.classList.remove('desabilitar');
-    boton.disabled=false;
-}
-
-//Funcion de Enviar Boton
-function Boton (){
-    formulario.addEventListener('submit',ControlarDatos);
-}
-
-//Controlamos los datos obtenidos
-function ControlarDatos(e){
-    e.preventDefault();
-    if (inputnom.value.length<=2||Number(inputnom.value)){
-        inputnom.style.background='#ed1652';
-        inputnom.style.color='white';
-        PedirDatos();
-    }
-    if (inputap.value.length<3||Number(inputap.value)){
-        inputap.style.background='#ed1652';
-        inputap.style.color='white';
-        PedirDatos();
-    }
-    if (inputedad.value<=0||isNaN(inputedad.value)||inputedad.value===""){
-        inputedad.style.background='#ed1652';
-        inputedad.style.color='white';
-        PedirDatos();
-    }
-    if (inputsal.value<0||isNaN(inputsal.value)||inputsal.value===""){
-        inputsal.style.background='#ed1652';
-        inputsal.style.color='white';
-        PedirDatos();
-    }
-    inputnom.value.length>=2&&inputap.value.length>=2&&inputnom.value!=Number&&inputap.value!=Number&&inputedad.value>0&&inputedad!=isNaN&&inputedad!=""&&inputsal.value>0&&inputsal!=isNaN&&inputsal!=""&&Empezar();
-}
-
-//Empezamos la aplicacion
-function Empezar(){
-    if(nombre!==''&&apellido!==''&&edad!==''&&salario!==''){
-        let val;
-        for (const persona of personas) {
-            if(nombre===persona.nombre && apellido===persona.apellido){
-                MostrarAlerta("El usuario ya esta creado.","El usuario ingresado ya esta creado, ingrese uno nuevamente.","warning","Intentar")
-                val=1;
-            }
+    formulario.addEventListener('input',(e)=>{
+        if(e.target.classList.contains('input')){
+            const valor=e.target.value;
+            comprobarValor(e.target,valor);
         }
-        if(val!=1){
-            MostrarAlerta("Te has registrado exitosamente","Excelente,te has registado exitosamente. ¡Es hora de comenzar!","success","Comenzar");
-            const persona={nombre:nombre,apellido:apellido,edad:edad,salario:salario,salarioinicial:salarioinicial};
-            localStorage.setItem('persona',JSON.stringify(persona));
-            const gastoss={gastostotales:gastostotales,gastostotalesE:gastostotalesE,gastostotalesI:gastostotalesI,diaE:diaE,diaI:diaI,m:m,n:n,porcentaje:porcentaje};
-            localStorage.setItem('gastos',JSON.stringify(gastoss));
-            localStorage.setItem('arraygasto',JSON.stringify(gastos));
-            localStorage.setItem('arraygastoin',JSON.stringify(gastosinnecesarios));
-            localStorage.setItem('arraysalario',JSON.stringify(salariosagregados));
-            setTimeout(() => {
-                formulario.remove();
-                EmpezarApp();
-            }, 3000); 
-        } 
+    })
+}
+formulario.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    if(nombre===undefined||apellido===undefined||edad===undefined||salario===undefined){
+        mostrarAlerta("Hay campos incompletos o erroneos","Tienes campos incompletos o erroneos,verificialos nuevamente y vuelve a comenzar","warning","Reintentar");
+    }else{
+        if(nombre.length>=2&&apellido.length>=2&&nombre!=Number&&apellido!=Number&&edad>0&&edad!=isNaN&&edad!=""&&salario>0&&salario!=isNaN&&salario!=""){
+            fetch("/usuarios.json")
+                .then((response)=>response.json())
+                .then((data)=>{
+                    let val=0;
+                    for (const persona of data) {
+                        if(nombre===persona.nombre && apellido===persona.apellido){
+                            mostrarAlerta("El usuario ya esta creado.","El usuario ingresado ya esta creado, ingrese uno nuevamente.","warning","Reintentar");
+                            val=1;
+                        }
+                    }
+                    if(val!=1){
+                        mostrarAlerta("Te has registrado exitosamente","Excelente,te has registado exitosamente. ¡Es hora de comenzar!","success","Comenzar");
+                        const persona= {nombre,apellido,edad,salario,salarioinicial};
+                        const gastoss={gastostotales:gastostotales,gastostotalesE:gastostotalesE,gastostotalesI:gastostotalesI,diaE:diaE,diaI:diaI,m:m,n:n,porcentaje:porcentaje};
+                        setLocal('persona',persona);
+                        setLocal('gastos',gastoss);
+                        setLocal('arraygasto',gastos);
+                        setLocal('arraygastoin',gastosinnecesarios);
+                        setLocal('arraysalario',salariosagregados);
+                        setTimeout(() => {
+                            EmpezarApp();
+                            formulario.remove();
+                        }, 3000);
+                    }
+                })
+        }
     }
-    setTimeout(()=>{
-        formulario.reset();
-        IniciarApp();
-    },3000)  
+})
+const comprobarValor = (e,valor) =>{
+    document.querySelector('#boton').disabled=false;
+    const esa=e=>{document.querySelector('#boton').disabled=e};
+    const background=b=>{e.style.background=b};
+    switch(e.id){
+        case "input1":
+            if(valor.length<=2||Number(valor)){
+                esa('true');
+                background('red');
+            }else{background('white');
+                nombre=valor;}
+            break;
+        case "input2":
+            if(valor.length<=2||Number(valor)){
+                esa('true');
+                background('red');
+            }else{background('white');
+                apellido=valor;}
+            break;
+        case "input3":
+            if(valor.length===""||isNaN(valor)||valor<=0){
+                esa('true');
+                background('red');
+            }else{background('white');
+                edad=valor;}
+            break;
+        case "input4":
+            if(valor.length==""||isNaN(valor)||valor<0){
+                esa('true');
+                background('red');
+            }else{background('white');
+                salario=valor;
+                salarioinicial=Number(valor)}
+            break;
+    }
+}
+const mostrarAlerta=(title,text,icon,button)=>{
+    swal({
+        title:title,
+        text:text,
+        icon:icon,
+        button:button,
+        duration:3000
+    })
 }
 
-//Mostramos Alerta
-function MostrarAlerta(title,text,icon,button){
-    swal({
-        title: title,
-        text: text,
-        icon: icon,
-        button: button,
-        duration:3000,
-    });
-}
+
 //Empezamos aplicacion y creamos la estructura correspondiente
 function EmpezarApp(){
+    setTimeout(() => {
+        document.body.removeAttribute("data-aos","flip-up") 
+    }, 450);
+    document.title="Calculadora de Gastos - Mis Gastos";
     let valor2=JSON.parse(localStorage.getItem('gastos')),valor=JSON.parse(localStorage.getItem('persona')),divpadre= document.createElement('div');
     gasto=0,gastoin=0,agregarsal=0;
     divpadre.classList.add('divpadre');
@@ -171,7 +162,7 @@ function EmpezarApp(){
         agregarsal=Number(inputagregarsal.value);
     }
     const divv=document.querySelector('#btnestadisctica');
-    divv.addEventListener('click',VerEstadisticas);
+    divv.addEventListener('click',VerEstadisticas)
     const finalizarsesion=document.querySelector('#cerrarsesion');
     finalizarsesion.addEventListener('click',CerrarSesion);
     porcentaje=gastostotalesI;
@@ -187,56 +178,75 @@ function VerEstadisticas(){
     let valor=JSON.parse(localStorage.getItem('persona'));
     const divdatos= document.querySelector('.divgastos');
     divdatos.innerHTML=`<img id="volver" src="/media/flecha.svg" width="40px">
-                        <p class="estadistica">Tu Nombre: <span class="dato">${valor.nombre}</span><img id="edit1" class="editar" src="/media/editar.svg" width="20px"</p>
-                        <p class="estadistica">Tu Apellido: <span class="dato">${valor.apellido}</span><img id="edit2" class="editar" src="/media/editar.svg" width="20px"</p>
-                        <p class="estadistica">Tu Edad: <span class="dato">${valor.edad}</span> Años<img id="edit3" class="editar" src="/media/editar.svg" width="20px"</p>
-                        <p class="estadistica">Tu Salario Inicial: <span class="dato">$${valor.salarioinicial}</span></p>
-                        <p class="estadistica">Tus Salarios Agregados: <Veces class="dato">${arraysalario.length} Veces</p>`;
+                        <p data-aos="flip-left" class="estadistica">Tu Nombre: <span class="dato">${valor.nombre}</span><img id="edit1" class="editar" src="/media/editar.svg" width="20px"</p>
+                        <p data-aos="flip-left" class="estadistica">Tu Apellido: <span class="dato">${valor.apellido}</span><img id="edit2" class="editar" src="/media/editar.svg" width="20px"</p>
+                        <p data-aos="flip-left" class="estadistica">Tu Edad: <span class="dato">${valor.edad}</span> Años<img id="edit3" class="editar" src="/media/editar.svg" width="20px"</p>
+                        <p data-aos="flip-left" class="estadistica">Tu Salario Inicial: <span class="dato">$${valor.salarioinicial}</span></p>
+                        <p data-aos="flip-left" class="estadistica">Tus Salarios Agregados: <Veces class="dato">${arraysalario.length}</p>`;
     const divestadisticas= document.querySelector('.divestadisticas');
     let total=0,mensaje;
     arraysalario.forEach(function(a){total += a;});
     let totalsalario=valor.salarioinicial+total;
     valor2.porcentaje=valor2.gastostotalesI/totalsalario*100;
-    valor2.porcentaje>=30 ? mensaje="Por lo tanto te recomendamos no seguir Gastando Innecesariamente" : mensaje="Por lo tanto todavia puedes seguir realizando Gastos Innecesarios";
-    divestadisticas.innerHTML=`<p class="estadistica">Salario Total Agregado: <span class="dato">$${totalsalario}</span></p>
-                        <p class="estadistica">Porcentaje de Gastos Innecesario en relacion a tu Total Agregado es de <span class="dato">${parseInt(valor2.porcentaje)}%</span>. ${mensaje}</p>`;
+    valor2.porcentaje>=30 ? mensaje="Por lo tanto, te recomendamos no seguir Gastando Innecesariamente." : mensaje="Por lo tanto, todavía puedes seguir realizando Gastos Innecesarios.";
+    divestadisticas.innerHTML=`<p data-aos="flip-up" class="estadistica">Salario Total Agregado: <span class="dato">$${totalsalario}</span></p>
+                        <p data-aos="flip-up" class="estadistica">Porcentaje de Gastos Innecesarios en relación a tu Total Agregado es de <span class="dato">${parseInt(valor2.porcentaje)}%</span>. ${mensaje}</p>`;
     const volver=document.querySelector('#volver');
     volver.addEventListener('click',Volver);
-    const edit1= document.querySelector('#edit1'),edit2= document.querySelector('#edit2'),edit3= document.querySelector('#edit3');
-    edit1.addEventListener('click',()=>{
-        swal("Ingresa tu nombre aquí:", {
-            content: "input",
-        })
-        .then((value) => {
-            value.length<=2||Number(value) ? swal('El nombre ingresado no es correcto,vuelve a intentarlo nuevamente.') : swal(`Perfecto, ahora tu Nombre es ${value}`);
-            valor.nombre=value;
-            localStorage.setItem('persona',JSON.stringify(valor));
-        });
-    });
-    edit2.addEventListener('click',()=>{
-        swal("Ingresa tu apellido aquí:", {
-            content: "input",
-        })
-        .then((value) => {
-            value.length<3||Number(value) ? swal('El apellido ingresado no es correcto,vuelve a intentarlo nuevamente.') : swal(`Perfecto, ahora tu Apellido es ${value}`);
-            valor.apellido=value;
-            localStorage.setItem('persona',JSON.stringify(valor));
-        });
-    });
-    edit3.addEventListener('click',()=>{
-        swal("Ingresa tu edad aquí:", {
-            content: "input",
-        })
-        .then((value) => {
-            value<=0||isNaN(value)||value==="" ? swal('La edad ingresada no es correcta,vuelve a intentarlo nuevamente.') : swal(`Perfecto, ahora tu Edad es ${value}`);
-            valor.edad=value;
-            localStorage.setItem('persona',JSON.stringify(valor));
-        });
-    });
+    divdatos.addEventListener('click',(e)=>{
+        if(e.target.classList.contains('editar')){
+            switch (e.target.id) {
+                case "edit1":
+                    swal("Ingresa tu nombre aquí:", {
+                        content: "input",
+                    })
+                    .then((value) => {
+                        if(value.length<=2||Number(value)){
+                            swal('El nombre ingresado no es correcto, vuelve a intentarlo nuevamente.')
+                        }else{
+                            swal(`Perfecto, ahora tu Nombre es ${value}`);
+                            valor.nombre=value;
+                            localStorage.setItem('persona',JSON.stringify(valor));
+                        } 
+                    });
+                    break;
+                case "edit2":
+                    swal("Ingresa tu apellido aquí:", {
+                        content: "input",
+                    })
+                    .then((value) => {
+                        value.length<3||Number(value) ? swal('El apellido ingresado no es correcto,vuelve a intentarlo nuevamente.') : swal(`Perfecto, ahora tu Apellido es ${value}`);
+                        if(value.length<3||Number(value)){
+                            swal('El apellido ingresado no es correcto,vuelve a intentarlo nuevamente.');
+                        }else{
+                            swal(`Perfecto, ahora tu Apellido es ${value}`);
+                            valor.apellido=value;
+                            localStorage.setItem('persona',JSON.stringify(valor))
+                        } 
+                    });
+                    break;
+                case "edit3":
+                    swal("Ingresa tu edad aquí:", {
+                        content: "input",
+                    })
+                    .then((value) => {
+                        if(value<=0||isNaN(value)||value===""){
+                            swal('La edad ingresada no es correcta,vuelve a intentarlo nuevamente.');
+                        }else{
+                            swal(`Perfecto, ahora tu Edad es ${value}`);
+                            valor.edad=value;
+                            localStorage.setItem('persona',JSON.stringify(valor));
+                        }
+                    });
+                    break;
+            }
+        }
+    })
 }
 
 //Funcion Volver
 function Volver(){
+    document.body.setAttribute("data-aos","flip-left")
     const borrar= document.querySelector('.divpadre');
     const borrar2= document.querySelector('.cerrarsesion');
     borrar.remove();
